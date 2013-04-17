@@ -1,0 +1,12 @@
+To begin, I cloned the directory to my computer (I use Mac, FYI).
+
+After cloning, make the local changes on your machine. Then you'll want to get them up to Github.
+
+Because this file was new, I had to add it:
+git add HowToGit.txt
+
+After adding, I had to commit to my local repository:
+git commit -am "This is a file about how to use Git... ish"
+
+Then push your local repository to the remote one:
+git push origin master 
