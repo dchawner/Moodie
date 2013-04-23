@@ -1,0 +1,6 @@
+http://thinknook.com/twitter-sentiment-analysis-training-corpus-dataset-2012-09-22/
+
+
+http://www.imdb.com/interfaces
+
+Go to "plain text files" section, pick your mirror, download the appropriate list.gz files.
