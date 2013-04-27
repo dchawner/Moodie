@@ -5,7 +5,7 @@
 
 import sys, string, pickle
 
-def createIndex(genrefile, plotfile):
+def createIndex(genre, genrefile, plotfile):
     ind = {}
     N = 0
     docs = []
@@ -23,7 +23,7 @@ def createIndex(genrefile, plotfile):
 
     count = 0
     for key in genrefile:
-        if "Action" in genrefile[key]["genres"]:
+        if genre in genrefile[key]["genres"]:
             docind = {}
             #count += 1
             title = genrefile[key]["title"]
@@ -87,7 +87,7 @@ def mixture(numwords, docs, index, query):
                 #score2 = 0
 
             scores[a] *= (lamb*score1 + (1-lamb)*score2)
-    print scores
+    #print scores
     return scores
 
 def main():
@@ -95,6 +95,8 @@ def main():
     docs = []
     N = 0
     query = ""
+    score = 0.0
+    ranges = []    
     # list of file numbers for this homework
     file1 = open("movie_data1.pkl", "r")
     genrefile = pickle.load(file1)
@@ -105,20 +107,53 @@ def main():
     #N, docs, index, titlelist, plotlist = createIndex()
     
     #query = "revenue down"
-    while 1:
-        query = raw_input("Query: ")
-        if query == "quit!":
-            return
-        N, docs, index, titlelist, plotlist = createIndex(genrefile, plotfile)
-        scores = mixture(N, docs, index, query)
+    queryfile = open("tttt.txt", "r")
+    a = 0
+    for line in queryfile:
+        if a == 0:
+	    query = line
+	if a == 1:
+	    score = float(line)
+	if a == 2:
+	    for char in line:
+	        ranges.append(char)
+	a += 1
+    
+    print ranges
+    if score < -.95:
+        genre = ranges[0]
+    if score >= .95 and score < -.125:
+        genre = ranges[1]
+    if score >= -.125 and score <= .125:
+        genre = ranges[2]
+    if score > .125 and score <= .95:
+        genre = ranges[3]
+    if score > .95:
+        genre = ranges[4]
+    print genre
+
+    if genre == "C":
+        genre = "Comedy"
+    if genre == "R":
+        genre = "Romance"
+    if genre == "D":
+        genre = "Drama"
+    if genre == "H":
+        genre = "Horror"
+    if genre == "A":
+        genre = "Action"
+    #if query == "quit!":
+    #    return
+    N, docs, index, titlelist, plotlist = createIndex(genre, genrefile, plotfile)
+    scores = mixture(N, docs, index, query)
         
-        sortedscores = list(scores)
-        sortedscores.sort()
-        sortedscores.reverse()
+    sortedscores = list(scores)
+    sortedscores.sort()
+    sortedscores.reverse()
         
-        index = scores.index(sortedscores[0])
-        print titlelist[index]
-        print plotlist[index]
+    index = scores.index(sortedscores[0])
+    print titlelist[index]
+    print plotlist[index]
     #print docs[0]
 
 

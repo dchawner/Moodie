@@ -11,12 +11,14 @@ def is_ascii(s):
 
 full_list=['Drama', 'Comedy', 'Romance', 'Action', 'Thriller', 'Animation'\
              'Crime', 'Horror', 'Fantasy', 'Adventure', 'Sci-Fi', 'Mystery'\
-             'Musical', 'War', 'Musical', 'Western', 'Family']
+             'Musical', 'War', 'Western', 'Family']
 f = open( "genres.txt", "r" )
 data = []
 counter=0
 all_movies=defaultdict(dict)
 genres_list=[]
+old_movie=""
+
 for line in f:
   if (counter==140115):
     tokens=line.split()
@@ -72,8 +74,8 @@ for line in f:
   #print tokens
   #for token in tokens:
   #print re.findall(r'',line)
-  #if (counter>10000+140115):
-  #  break
+  if (counter>10000+140115):
+    break
 
 f.close()
 
