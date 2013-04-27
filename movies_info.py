@@ -11,7 +11,7 @@ def is_ascii(s):
 
 full_list=['Drama', 'Comedy', 'Romance', 'Action', 'Thriller', 'Animation'\
              'Crime', 'Horror', 'Fantasy', 'Adventure', 'Sci-Fi', 'Mystery'\
-             'Musical', 'War', 'Musical', 'Western']
+             'Musical', 'War', 'Musical', 'Western', 'Family']
 f = open( "genres.txt", "r" )
 data = []
 counter=0
@@ -138,7 +138,6 @@ i=0
 print "--------------------------------"
 
 all_movies2=defaultdict(dict)
-
 
 for line in f:
   if (counter > 1769555):
