@@ -1,0 +1,358 @@
+<html>
+<head>
+<link rel="stylesheet" href="jquery-ui.css" />
+<script src="jquery-1.8.3.js"></script>
+<script src="jquery-ui.js"></script>
+<style>
+.input
+{
+  width: 600px;
+    border-radius: 5px; //CSS3 Feature
+}
+
+</style>
+<script type = "text/javascript">
+var take_questionnaire_flag = false;
+
+function display_questionnaire()
+{
+	document.getElementById('question_1').hidden = false;
+	document.getElementById('question_2').hidden = false;
+	document.getElementById('question_3').hidden = false;
+	document.getElementById('question_4').hidden = false;
+	document.getElementById('question_5').hidden = false;
+	document.getElementById('show_status_box').hidden = false;
+	document.getElementById('status').hidden = true;
+}
+var ranges = '';
+function display_status_box()
+{
+	ranges = '';
+	var radios = document.getElementsByName('question_1_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			ranges = ranges + radios[i].value;
+			break;
+		}
+	}
+	
+	radios = document.getElementsByName('question_2_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			ranges = ranges + radios[i].value;
+			break;
+		}
+	}
+	
+	radios = document.getElementsByName('question_3_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			ranges = ranges + radios[i].value;
+			break;
+		}
+	}
+	
+	radios = document.getElementsByName('question_4_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			ranges = ranges + radios[i].value;
+			break;
+		}
+	}
+	
+	radios = document.getElementsByName('question_5_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			ranges = ranges + radios[i].value;
+			break;
+		}
+	}
+	document.getElementById('question_1').hidden = true;
+	document.getElementById('question_2').hidden = true;
+	document.getElementById('question_3').hidden = true;
+	document.getElementById('question_4').hidden = true;
+	document.getElementById('question_5').hidden = true;
+	document.getElementById('show_status_box').hidden = true;
+	document.getElementById('status').hidden = false;
+}
+
+function display_status()
+{
+	document.getElementById('question_1').hidden = true;
+	document.getElementById('question_2').hidden = true;
+	document.getElementById('question_3').hidden = true;
+	document.getElementById('question_4').hidden = true;
+	document.getElementById('question_5').hidden = true;
+	document.getElementById('show_status_box').hidden = true;
+	document.getElementById('status').hidden = false;
+}
+
+function radio_buttons()
+{
+	var radios = document.getElementsByName('questionnaire_buttons');
+
+	for (var i = 0, length = radios.length; i < length; i++) 
+	{
+		if (radios[i].checked) 
+		{
+			if(radios[i].value === 'Yes')
+			{
+				take_questionnaire_flag = true;
+			}
+			else
+			{
+				take_questionnaire_flag = false;
+			}
+			break;
+		}
+	}
+	
+	if(take_questionnaire_flag == true)
+	{
+		display_questionnaire();
+	}
+	else
+	{
+		display_status();
+	}
+	document.getElementById('yes_no_radio_buttons').hidden = true;
+	document.getElementById('question').hidden = true;
+}
+
+function get_results()
+{
+	document.movie_title = '';
+	document.movie_plot = '';
+	
+	$.ajax({
+	  type: 'GET',
+	  url: 'moodie_movie_results_title.php',
+	  data: 'id=testdata2',
+	  success: function(result) {
+		document.getElementById('question_1').hidden = true;
+		document.getElementById('question_2').hidden = true;
+		document.getElementById('question_3').hidden = true;
+		document.getElementById('question_4').hidden = true;
+		document.getElementById('question_5').hidden = true;
+		document.getElementById('show_status_box').hidden = true;
+		document.getElementById('status').hidden = true;
+		document.getElementById('movie_results_title').hidden = false;
+		document.getElementById('movie_results_title').innerHTML = result;
+	  }
+	  });
+	  
+	$.ajax({
+	  type: 'GET',
+	  url: 'moodie_movie_results_plot.php',
+	  data: 'id=testdata2',
+	  success: function(result) {
+		document.getElementById('question_1').hidden = true;
+		document.getElementById('question_2').hidden = true;
+		document.getElementById('question_3').hidden = true;
+		document.getElementById('question_4').hidden = true;
+		document.getElementById('question_5').hidden = true;
+		document.getElementById('show_status_box').hidden = true;
+		document.getElementById('status').hidden = true;
+		document.getElementById('movie_results_plot').hidden = false;
+		document.getElementById('movie_results_plot').innerHTML = result;
+	  }
+	  });  
+	
+}
+
+function sleep(ms)
+{
+	var dt = new Date();
+	dt.setTime(dt.getTime() + ms);
+	var i = 0;
+	while ((new Date().getTime()) < dt.getTime())
+	{
+		console.log(i);
+		i = i + 1;
+	}
+}
+
+function process_status()
+{
+	var status;
+	if(take_questionnaire_flag === false)
+	{
+		ranges = 'CRDAH';
+		status = document.getElementById('status_text').value;
+//		alert(ranges);
+//		alert(status);
+	}
+	else
+	{
+		
+		status = document.getElementById('status_text').value;
+//		alert(ranges);
+//		alert(status);
+	}
+	
+	var data = status + ', ' + ranges;
+	alert(data);
+	$.ajax({
+	  type: 'POST',
+	  url: 'run_python.php',
+	  data: {'data': data},
+	  });
+	
+	sleep(90000);
+	get_results();
+}
+
+function display()
+{
+	alert('Yay');
+}
+</script>
+</head>
+<body>
+	<h1 style="font-family:comic sans MS;color:red;font-size:90px; text-align:center; background-color:#F5DEB3;" >
+		MOODIE
+	</h1>
+	<div>
+		<h3 style="font-family:comic sans MS;color:maroon;font-size:18px; text-align:center;">
+			Howdy! Welcome to Moodie, your one- stop solution to choosing movies!
+		</h3>
+		<br />
+	</div>
+	<div>
+		<h3 id = 'question' style="font-family:verdana;color:brown;font-size:15px; text-align:center;">
+			Would you like to answer a short questionnaire that would help us customize the results for you?
+		</h3>
+	</div>
+	<br />
+	<div>
+		<h3 id = 'yes_no_radio_buttons' style="font-family:calibri;color:brown;font-size:15px; text-align:center;">
+			<input type="radio" name="questionnaire_buttons" value="Yes" onchange = "radio_buttons()"> Yes
+			<br />
+			<input type="radio" name="questionnaire_buttons" value="No" onchange = "radio_buttons()"> No 
+		</h3>
+		
+	</div>
+	<table style = "background-color:#f9f9d2; align:right;">
+	<tr id = "question_1" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:left;" >
+		awhhe man.... I'm completely useless rt now. Funny, all I can do is twitter. http://myloc.me/27HX
+	</h3>
+	</td>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:right;" >
+		<input type="radio" name="question_1_buttons" value="C"> C
+		<input type="radio" name="question_1_buttons" value="R"> R
+		<input type="radio" name="question_1_buttons" value="D"> D
+		<input type="radio" name="question_1_buttons" value="A"> A
+		<input type="radio" name="question_1_buttons" value="H"> H
+	</h3>
+	</td>
+	</tr>
+	<tr id = "question_2" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:left;" >
+		I missed the New Moon trailer...
+	</h3>
+	</td>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:right;" >
+		<input type="radio" name="question_2_buttons" value="C"> C
+		<input type="radio" name="question_2_buttons" value="R"> R
+		<input type="radio" name="question_2_buttons" value="D"> D
+		<input type="radio" name="question_2_buttons" value="A"> A
+		<input type="radio" name="question_2_buttons" value="H"> H
+	</h3>
+	</td>
+	</tr>
+	<tr id = "question_3" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:left;" >
+		thanks to all the haters up in my face all day! 112-102
+	</h3>
+	</td>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:right;" >
+		<input type="radio" name="question_3_buttons" value="C"> C
+		<input type="radio" name="question_3_buttons" value="R"> R
+		<input type="radio" name="question_3_buttons" value="D"> D
+		<input type="radio" name="question_3_buttons" value="A"> A
+		<input type="radio" name="question_3_buttons" value="H"> H
+	</h3>
+	</td>
+	</tr>
+	<tr id = "question_4" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:left;" >
+		Sunny Again        Work Tomorrow  :-|       TV Tonight
+	</h3>
+	</td>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:right;" >
+		<input type="radio" name="question_4_buttons" value="C"> C
+		<input type="radio" name="question_4_buttons" value="R"> R
+		<input type="radio" name="question_4_buttons" value="D"> D
+		<input type="radio" name="question_4_buttons" value="A"> A
+		<input type="radio" name="question_4_buttons" value="H"> H
+	</h3>
+	</td>
+	</tr>
+	<tr id = "question_5" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:left;" >
+		 I just cut my beard off. It's only been growing for well over a year. I'm gonna start it over. @shaunamanu is happy in the meantime.
+	</h3>
+	</td>
+	<td>
+	<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:right;" >
+		<input type="radio" name="question_5_buttons" value="C"> C
+		<input type="radio" name="question_5_buttons" value="R"> R
+		<input type="radio" name="question_5_buttons" value="D"> D
+		<input type="radio" name="question_5_buttons" value="A"> A
+		<input type="radio" name="question_5_buttons" value="H"> H
+	</h3>
+	</td>
+	</tr>
+	<tr id = 'show_status_box' hidden>
+	<td>
+		<button type="button" id = "show_status_button" onclick="display_status_box()"> Display Status Box! </button>
+	</td>
+	</tr>
+	<tr id = "status" hidden>
+	<td>
+	<h3 style="font-family:comic sans MS;color:blue;font-size:15px; text-align:center"; >
+		Please input your status: 
+		<input class = "input" id = "status_text"> </input>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type="button" id = "process_status_button" onclick="process_status()"> Get the movie! </button>
+	</h3>
+	</td>
+	</tr>
+	</table>
+	<div>
+		<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:center;" id = 'movie_results_title' hidden>
+		 
+		</h3>
+		<h3 style="font-family:comic sans MS;color:green;font-size:15px; text-align:center;" id = 'movie_results_plot' hidden>
+		 
+		</h3>
+	</div>	
+	<br>
+	
+</body>
+</html>
